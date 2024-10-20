@@ -10,20 +10,26 @@ print("Initial Bell state:")
 print(bell_state)
 
 
-def simulate_data_loss(distance, noise_level, packet_size):
+def simulate_data_loss(distance, noise_level, packet_size, environment_factor=1.0, congestion_factor=1.0):
     """
     模擬數據丟失率，考慮距離、雜訊（物理層影響：如有線通訊的纜線材質、電阻、emp干擾、電壓穩定度等）和封包大小的影響。
     """
     print(f"Simulating data loss for distance: {distance}, packet size: {packet_size}")
-    # 假設距離越遠，丟失率越高，且封包越大，數據丟失的風險越大
-    distance_loss = np.exp(-distance / noise_level)
     
-    # 假設封包越大，丟失率越高
-    # 這裡 packet_loss 是根據 packet_size 的對數函數調整
-    packet_loss = 1 - np.exp(-packet_size / 1000)  # 比例基於封包大小
+    # 假設距離影響較小
+    distance_loss = np.exp(-distance / (noise_level * 10))
     
-    # 總丟失率考慮了距離和封包大小的影響
-    total_loss = distance_loss * packet_loss
+    # 假設封包大小影響較小
+    packet_loss = 1 - np.exp(-packet_size / 5000)
+    
+    # 環境因素影響
+    environment_loss = environment_factor
+    
+    # 網路擁塞影響
+    congestion_loss = congestion_factor
+    
+    # 總丟失率考慮了所有因素的影響
+    total_loss = distance_loss * packet_loss * environment_loss * congestion_loss
     return total_loss
 
 # 模擬不同距離和封包大小的數據丟失
