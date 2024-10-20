@@ -1,9 +1,10 @@
 # 1導入 QuTiP 來模擬量子糾纏
+from networkx import tensor_product
 from qutip import *
 import numpy as np
 
 # 初始化“一個”量子糾纏態：(2,x)的2表示2個糾纏的數據，即(x,0)⊗(x,1)的0,1表示耦合成對性（即設定為a數據為1則b數據為0，反之亦然）
-bell_state = (tensor(basis(2,0), basis(2,1)) + tensor(basis(2,1), basis(2,0))).unit()
+bell_state = (tensor_product(basis(2,0), basis(2,1)) + tensor(basis(2,1), basis(2,0))).unit()
 
 # 列印以確認（measure）量子態
 print(bell_state)
@@ -18,13 +19,13 @@ def simulate_data_loss(distance, noise_level, packet_size):
     
     # 假設封包越大，丟失率越高
     # 這裡 packet_loss 是根據 packet_size 的對數函數調整
-    packet_loss = 1 - np.exp(-packet_size / 1000)  # 比例基於數據包大小
+    packet_loss = 1 - np.exp(-packet_size / 1000)  # 比例基於封包大小
     
     # 總丟失率考慮了距離和封包大小的影響
     total_loss = distance_loss * packet_loss
     return total_loss
 
-# 模擬不同距離和數據包大小的數據丟失
+# 模擬不同距離和封包大小的數據丟失
 distances = np.linspace(0, 100, 50)
 packet_sizes = np.linspace(100, 1000, 5)  # 不同大小的封包
 
