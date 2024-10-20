@@ -46,12 +46,41 @@ def simulate_data_loss_short_distance(distance, noise_level, packet_size, enviro
 
 # 情境3：封包越小且距離越短，丟失率越高
 def simulate_data_loss_small_packet_short_distance(distance, noise_level, packet_size, environment_factor=1.0, congestion_factor=1.0):
+    # 封包越小，距離越短，丟失率越高
     packet_loss = np.exp(-packet_size / 5000)
     distance_loss = 1 - np.exp(-1 / (distance + 1))
-    # 其他部分與原函數相同
-    # ...
+    noise_loss = np.exp(-noise_level / 10)
+    total_loss = packet_loss * distance_loss * noise_loss * environment_factor * congestion_factor
+    return total_loss
 
-# 情境4：封包越大且距離越長，丟失率越高（原假設）
+# 情境4：封包越小，距離越大，丟失率越高
+def simulate_data_loss_small_packet_long_distance(distance, noise_level, packet_size, environment_factor=1.0, congestion_factor=1.0):
+    # 封包越小，距離越大，丟失率越高
+    packet_loss = np.exp(-packet_size / 5000)
+    distance_loss = np.exp(-distance / 100)
+    noise_loss = np.exp(-noise_level / 10)
+    total_loss = packet_loss * distance_loss * noise_loss * environment_factor * congestion_factor
+    return total_loss
+
+# 情境5：封包越大，距離越短，丟失率越高
+def simulate_data_loss_large_packet_short_distance(distance, noise_level, packet_size, environment_factor=1.0, congestion_factor=1.0):
+    # 封包越大，距離越短，丟失率越高
+    packet_loss = 1 - np.exp(-packet_size / 5000)
+    distance_loss = 1 - np.exp(-1 / (distance + 1))
+    noise_loss = np.exp(-noise_level / 10)
+    total_loss = packet_loss * distance_loss * noise_loss * environment_factor * congestion_factor
+    return total_loss
+
+# 情境6：封包越大，距離越短，丟失率越高
+def simulate_data_loss_large_packet_short_distance(distance, noise_level, packet_size, environment_factor=1.0, congestion_factor=1.0):
+    # 封包越大，距離越短，丟失率越高
+    packet_loss = 1 - np.exp(-packet_size / 5000)
+    distance_loss = 1 - np.exp(-1 / (distance + 1))
+    noise_loss = np.exp(-noise_level / 10)
+    total_loss = packet_loss * distance_loss * noise_loss * environment_factor * congestion_factor
+    return total_loss
+
+# 情境7：封包越大，距離越長，丟失率越高（原假設）
 def simulate_data_loss_large_packet_long_distance(distance, noise_level, packet_size, environment_factor=1.0, congestion_factor=1.0):
     # 這個情境與原函數相同
     return simulate_data_loss(distance, noise_level, packet_size, environment_factor, congestion_factor)
@@ -75,6 +104,7 @@ plt.ylabel('Data Loss')
 plt.title('Data Loss vs Distance for Different Packet Sizes')
 plt.legend()
 plt.show()
+
 
 
 
