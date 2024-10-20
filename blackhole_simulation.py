@@ -1,12 +1,12 @@
 # 1導入 QuTiP 來模擬量子糾纏
-from networkx import tensor_product
 from qutip import *
 import numpy as np
 
 # 初始化“一個”量子糾纏態：(2,x)的2表示2個糾纏的數據，即(x,0)⊗(x,1)的0,1表示耦合成對性（即設定為a數據為1則b數據為0，反之亦然）
-bell_state = (tensor_product(basis(2,0), basis(2,1)) + tensor(basis(2,1), basis(2,0))).unit()
+bell_state = (tensor(basis(2,0), basis(2,1)) + tensor(basis(2,1), basis(2,0))).unit()
 
 # 列印以確認（measure）量子態
+print("Initial Bell state:")
 print(bell_state)
 
 
@@ -14,7 +14,8 @@ def simulate_data_loss(distance, noise_level, packet_size):
     """
     模擬數據丟失率，考慮距離、雜訊（物理層影響：如有線通訊的纜線材質、電阻、emp干擾、電壓穩定度等）和封包大小的影響。
     """
-    # 距離越遠，丟失率越高，且封包越大，數據丟失的風險越大
+    print(f"Simulating data loss for distance: {distance}, packet size: {packet_size}")
+    # 假設距離越遠，丟失率越高，且封包越大，數據丟失的風險越大
     distance_loss = np.exp(-distance / noise_level)
     
     # 假設封包越大，丟失率越高
@@ -26,16 +27,19 @@ def simulate_data_loss(distance, noise_level, packet_size):
     return total_loss
 
 # 模擬不同距離和封包大小的數據丟失
+print("Starting data loss simulation...")
 distances = np.linspace(0, 100, 50)
 packet_sizes = np.linspace(100, 1000, 5)  # 不同大小的封包
 
 # 繪製不同 packet_size 下的數據丟失曲線
 import matplotlib.pyplot as plt
 for packet_size in packet_sizes:
+    print(f"Simulating for packet size: {packet_size}")
     losses = [simulate_data_loss(d, 10, packet_size) for d in distances]
     plt.plot(distances, losses, label=f'Packet Size: {packet_size} bytes')
 
 # 圖像配置
+print("Plotting results...")
 plt.xlabel('Distance')
 plt.ylabel('Data Loss')
 plt.title('Data Loss vs Distance for Different Packet Sizes')
