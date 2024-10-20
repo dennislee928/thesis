@@ -20,6 +20,9 @@
    ```bash
    pip install qutip numpy matplotlib
    ```
+3. 或是用 docker 跑
+   拉取映像：docker pull dennisleetw/blackhole-simulation:latest
+   運行映像：docker run -it dennisleetw/blackhole-simulation:latest
 
 ## 使用方法
 
