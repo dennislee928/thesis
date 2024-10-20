@@ -1,6 +1,7 @@
 # 1導入 QuTiP 來模擬量子糾纏
 from qutip import *
 import numpy as np
+import matplotlib.pyplot as plt
 
 # 初始化“一個”量子糾纏態：(2,x)的2表示2個糾纏的數據，即(x,0)⊗(x,1)的0,1表示耦合成對性（即設定為a數據為1則b數據為0，反之亦然）
 bell_state = (tensor(basis(2,0), basis(2,1)) + tensor(basis(2,1), basis(2,0))).unit()
@@ -90,19 +91,35 @@ print("Starting data loss simulation...")
 distances = np.linspace(0, 100, 50)
 packet_sizes = np.linspace(100, 1000, 5)  # 不同大小的封包
 
-# 繪製不同 packet_size 下的數據丟失曲線
-import matplotlib.pyplot as plt
-for packet_size in packet_sizes:
-    print(f"Simulating for packet size: {packet_size}")
-    losses = [simulate_data_loss(d, 10, packet_size) for d in distances]
-    plt.plot(distances, losses, label=f'Packet Size: {packet_size} bytes')
+# 設置不同的 noise_level 值
+noise_levels = np.linspace(0, 20, 5)  # 例如，從0到20，分成5個不同的值
 
-# 圖像配置
-print("Plotting results...")
-plt.xlabel('Distance')
-plt.ylabel('Data Loss')
-plt.title('Data Loss vs Distance for Different Packet Sizes')
-plt.legend()
+# 創建一個圖形和子圖
+fig, ax1 = plt.subplots()
+
+# 繪製不同 packet_size 下的數據丟失曲線
+for packet_size in packet_sizes:
+    losses = [simulate_data_loss(d, 10, packet_size) for d in distances]
+    ax1.plot(distances, losses, label=f'Packet Size: {packet_size} bytes')
+
+# 設置第一個子圖的標籤和標題
+ax1.set_xlabel('Distance')
+ax1.set_ylabel('Data Loss')
+ax1.set_title('Data Loss vs Distance for Different Packet Sizes')
+ax1.legend(loc='upper right')
+
+# 創建第二個子圖共享x軸
+ax2 = ax1.twinx()
+
+# 繪製不同 noise_level 下的數據丟失曲線
+losses = [simulate_data_loss(50, nl, 500) for nl in noise_levels]
+ax2.plot(noise_levels, losses, marker='o', color='r', label='Data Loss vs Noise Level')
+
+# 設置第二個子圖的標籤
+ax2.set_ylabel('Data Loss (Noise Level)')
+ax2.legend(loc='upper left')
+
+# 顯示圖形
 plt.show()
 
 
